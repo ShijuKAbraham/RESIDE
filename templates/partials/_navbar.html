@@ -1,0 +1,58 @@
+{% load static %}
+<!-- START SECTION HEADINGS -->
+<div class="header">
+		
+        <div class="header-bottom heading sticky-header" id="heading">
+            <div class="container">
+                <a href="{% url 'index' %}" class="logo">
+                    <img src="{% static 'logo/reside_logo.png' %}" alt="Reside">
+                </a>
+                
+                
+                <button type="button" class="button-menu hidden-lg-up" data-toggle="collapse" data-target="#main-menu" aria-expanded="false" style="padding-left:85%;">
+                    <i class="fa fa-bars" aria-hidden="true"></i>
+                </button>
+
+                
+
+                <nav id="main-menu" class="collapse">
+                    <ul>
+                        <!-- STAR COLLAPSE MOBILE MENU -->
+                        <li class="dropdown hidden-md-down">
+                            <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#">HOME</a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="#recently_added">Recently Added Property</a>
+                                <a class="dropdown-item" href="#property_services">Property Services</a>
+                                <a class="dropdown-item" href="#featured_properties">Featured Properties</a>
+                                <a class="dropdown-item" href="#most_popular_places">Most Popular Places</a>
+                                <a class="dropdown-item" href="#meet_our_agents">Our Agents</a>
+                                <a class="dropdown-item" href="#sold_houses">Sold Houses</a>
+                                <a class="dropdown-item" href="#happy_customers">Reviews</a>
+                                <a class="dropdown-item" href="#counter">Our Achievements</a>
+                                <a class="dropdown-item" href="#newsletter">Newsletter</a>
+                            </div>
+                        </li>
+                        <li class="dropdown hidden-md-down">
+                            <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#">RENT</a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="#">Flat/House</a>
+                                <a class="dropdown-item" href="#">Apartment</a>
+                                <a class="dropdown-item" href="#">Commercial</a>
+                            </div>
+                        </li>
+                        <li class="dropdown hidden-md-down">
+                            <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#">FOR SALE</a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="#">Flat/House</a>
+                                <a class="dropdown-item" href="#">Apartment</a>
+                                <a class="dropdown-item" href="#">Commercial</a>
+                            </div>
+                        </li>
+                        <li><a href="{% url 'listings' %}">FEATURED PROPERTIES</a></li>
+                        <li><a href="#">LAND</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="{% url 'about' %}">About</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>

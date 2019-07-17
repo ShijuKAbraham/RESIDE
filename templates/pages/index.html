@@ -1,0 +1,1249 @@
+{% extends 'base.html' %} 
+
+{% load humanize %}
+
+{% block content %} 
+
+	<!-- STAR HEADER GOOGLE MAP -->
+	{% if listings %}
+	{% for listing in listings %}
+		<input type="text" id="name" class="mark title"  name="name{{ listing.id }}" value="{{ listing.title }}" style="display: none;"/>
+		<input type="text" id="lat" class="lat" name="lat{{ listing.id }}" value="{{ listing.latitude }}" style="display: none;"/>
+		<input type="text" id="lng" class="lng" name="lng{{ listing.id }}" value="{{ listing.longtitude }}" style="display: none;"/>
+		<input type="text" id="des" class="des" name="des{{ listing.id }}" value="{{ listing.description }}" style="display: none;"/>
+		<input type="text" id="type" class="type" name="type{{ listing.id }}" value="{{ listing.house_type }}" style="display: none;"/>
+		{% endfor %}
+	{%  endif %}	
+	<section class="header-map google-maps pull-top map-leaflet-wrapper">
+		<div id="map-leaflet">
+			
+		<!-- map script -->
+					<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB_kua5kkwDTNktIoWp1vsbRzZfjqfCc0U"></script>
+					<script>
+							function map() {
+								var h_type=document.getElementById('type').value;
+								var house_url = "https://cdn0.iconfinder.com/data/icons/map-and-navigation-2-1/48/100-512.png";
+									var apartment_url = "https://keelty.com/wp-content/uploads/2017/05/apartment-poi-icon-01.png";
+									var main_url;
+									
+									var result1 = h_type.localeCompare("Apartment");
+									
+									if(result1 == "0")
+									{
+										
+										main_url = apartment_url;
+									}
+									else
+									{
+										main_url = house_url;
+									}
+
+
+								var map;
+								var bounds = new google.maps.LatLngBounds();
+								var mapOptions = {
+									mapTypeId: 'roadmap'
+								};
+
+								
+								
+
+								//geolocation
+								if (navigator.geolocation) {
+									navigator.geolocation.getCurrentPosition(function(position) {
+									  var pos = {
+										lat: position.coords.latitude,
+										lng: position.coords.longitude
+									  };
+						  
+									  
+									  infoWindow.open(map);
+									  map.setCenter(pos);
+									}, function() {
+									  handleLocationError(true, infoWindow, map.getCenter());
+									});
+								  } else {
+									// Browser doesn't support Geolocation
+									handleLocationError(false, infoWindow, map.getCenter());
+								  }
+								  function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+									infoWindow.setPosition(pos);
+									infoWindow.setContent(browserHasGeolocation ?
+														  'Error: The Geolocation service failed.' :
+														  'Error: Your browser doesn\'t support geolocation.');
+									infoWindow.open(map);
+								  }
+							
+						  
+
+								//end of geo
+								// Display a map on the web page
+								map = new google.maps.Map(document.getElementById("map-leaflet"), {
+									zoom: 13,
+									
+									gestureHandling: 'greedy',
+									
+								});
+
+								map.setTilt(50);
+
+								var icon = {
+									url: main_url, // url
+									scaledSize: new google.maps.Size(50, 50), // scaled size
+								};
+								//jquery 
+
+								var numitems = $('.mark').length;
+								// Multiple markers location, latitude, and longitude
+								var markers = [];
+								var descriptions = [];
+								var h_type=document.getElementById('type').value;
+								var house_url = "https://cdn0.iconfinder.com/data/icons/map-and-navigation-2-1/48/100-512.png";
+									var apartment_url = "https://keelty.com/wp-content/uploads/2017/05/apartment-poi-icon-01.png";
+									var main_url;
+									var result = h_type.localeCompare("Independent");
+									if(result === 1)
+									{
+										main_url = house_url;
+									}
+									else
+									{
+										main_url = apartment_url;
+									}
+
+
+								var infoWindowContent = [];
+
+								var name = $(".title");
+								var lat = $(".lat");
+								var lng = $(".lng");
+								var des = $(".des");
+								
+								for(var i=0;i<numitems;i++)
+								{
+									var loc = [];
+									loc[0] = name[i].value;
+									loc[1] = lat[i].value;
+									loc[2] = lng[i].value;
+									
+									markers.push(loc);
+
+									var description = [];
+									description[0] = name[i].value;
+									
+
+									
+									
+									// Info window content
+									infoWindowContent.push(description);
+								}
+												
+								
+								// Add multiple markers to map
+								var infoWindow = new google.maps.InfoWindow(), marker, i;
+								
+								// Place each marker on the map  
+								for( i = 0; i < markers.length; i++ ) {
+									var position = new google.maps.LatLng(markers[i][1], markers[i][2]);
+									bounds.extend(position);
+									marker = new google.maps.Marker({
+										position: position,
+										map: map,
+										icon: icon,
+										title: markers[i][0]
+									});
+									
+							  
+									 
+									// Add info window to marker    
+									google.maps.event.addListener(marker, 'click', (function(marker, i) {
+										return function() {
+											infoWindow.setContent(infoWindowContent[i][0]);
+											infoWindow.open(map, marker);
+											map.setCenter(this.getPosition()); 
+											map.setZoom(20);
+										}
+									})(marker, i));
+									
+									// Center the map to fit all markers on the screen
+									map.fitBounds(bounds);
+								}
+							
+								// Set zoom level
+								var boundsListener = google.maps.event.addListener((map), 'bounds_changed', function(event) {
+									
+									google.maps.event.removeListener(boundsListener);
+								});
+								
+							}
+							// Load initialize function
+							google.maps.event.addDomListener(window, 'load', map);
+							
+							
+					</script>
+					
+					
+	</div>
+	
+		<!-- end of map -->
+
+		<!-- Search section -->
+		<div class="container">
+			<div class="filter">
+				<div class="filter-toggle hidden-md-up"><i class="fa fa-search"></i>
+					<h6>START SEARCHING</h6></div>
+				<form action="{% url 'search' %}">
+					<div class="filter-item">
+						<label>Keyword</label>
+						<input type="text" name="keywords" class="form-control" placeholder="Keyword (Pool, Garage, etc)">
+					</div>
+					<div class="filter-item">
+						<label>Property Type</label>
+						<select name="house_type" class="form-control">
+							<option value="">Any Type</option>
+							{% for key,value in type_choices.items %}
+									<option value="{{ key }}">{{ value }}</option>
+							{% endfor %}
+						</select>
+					</div>
+					<div class="filter-item filter-half">
+						<label>Beds</label>
+						<select name="bedrooms" id="property-beds" class="form-control">
+							<option value="">Any</option>
+							{% for key,value in bedroom_choices.items %}
+									<option value="{{ key }}">{{ value }}</option>
+							{% endfor %}
+						</select>
+					</div>
+					<div class="filter-item filter-half filter-half-last">
+						<label>Baths</label>
+						<select name="bathrooms" id="property-baths" class="form-control">
+							<option value="">Any</option>
+							{% for key,value in bathroom_choices.items %}
+									<option value="{{ key }}">{{ value }}</option>
+							{% endfor %}
+						</select>
+					</div>
+					<div class="clear"></div>
+					<div class="filter-item">
+						<label>Area</label>
+						<select name="area" id="property-area" class="form-control">
+							<option value="">Any</option>
+							{% for key,value in area_choices.items %}
+									<option value="{{ key }}">{{ value }}</option>
+								{% endfor %}
+						</select>
+					</div>
+					<div class="filter-item">
+							<label>State</label>
+							<select name="state" class="form-control">
+								<option value="">State (All)</option>
+								{% for key,value in state_choices.items %}
+									<option value="{{ key }}">{{ value }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					<div class="filter-item">
+							<label>Price</label>
+							<select name="price" id="property-price" class="form-control">
+								<option value="">Any</option>
+								{% for key,value in price_choices.items %}
+									<option value="{{ key }}">{{ value }}</option>
+								{% endfor %}
+							</select>
+					</div>
+					<div class="filter-item">
+						<label class="label-submit">Submit</label>
+						<br/>
+						<input type="submit" class="button alt" value="SEARCH PROPERTY" />
+					</div>
+				</form>
+			</div>
+		</div>
+	</section>
+	<!-- END HEADER GOOGLE MAP -->
+
+	<!-- START SECTION RECENTLY PROPERTIES -->
+<section class="recently portfolio" id="recently_added">
+		<div class="container-fluid">
+			<div class="section-title">
+				<h3>Recently</h3>
+				<h2>ADDED PROPERTIES</h2>
+			</div>
+			<div class="row portfolio-items">
+				{% if listings %}
+					{% for listing in listings %}
+						<!-- Listings -->
+						<div class="item col-lg-3 col-md-6 col-xs-12 landscapes">
+								<div class="project-single">
+									<div class="project-inner project-head">
+										<div class="project-bottom">
+											<h4><a href="{% url 'listing' listing.id %}">View Property</a><span class="category">Real Estate</span></h4>
+										</div>
+										<div class="button-effect">
+											<a href="{{ listing.video.url}}" class="btn popup-video popup-youtube"><i class="fas fa-video"></i></a>
+											
+										</div>
+										<div class="homes">
+											<!-- homes img -->
+											<a href="properties-details.html" class="homes-img">
+												<img src="{{ listing.photo_main.url }}" alt="home-1" class="img-responsive">
+											</a>
+										</div>
+									</div>
+									<!-- homes content -->
+									<div class="homes-content">
+										<!-- homes address -->
+										<h3>{{ listing.title }}</h3>
+										<p class="homes-address mb-3">
+											<a href="properties-details.html">
+												<i class="fa fa-map-marker"></i><span>{{ listing.address }}</span>
+											</a>
+										</p>
+										<!-- homes List -->
+										<ul class="homes-list clearfix">
+											<li>
+												<i class="fa fa-bed" aria-hidden="true"></i>
+												<span>Bedrooms: {{ listing.bedrooms }}</span>
+											</li>
+											<li>
+												<i class="fa fa-bath" aria-hidden="true"></i>
+												<span>Bathrooms: {{ listing.bathrooms }}</span>
+											</li>
+											<li>
+												<i class="fa fa-object-group" aria-hidden="true"></i>
+												<span>Sqft: {{ listing.sqft }}</span>
+											</li>
+											<li>
+												<i class="fas fa-warehouse" aria-hidden="true"></i>
+												<span>Garage: {{ listing.garage }}</span>
+											</li>
+										</ul>
+										<!-- Price -->
+										<div class="price-properties">
+											<h3 class="title mt-3">
+											<a href="properties-details.html">₹ {{ listing.price | intcomma }}</a>
+											</h3>
+											<div class="compare">
+												<a href="#" title="Compare">
+													<i class="fas fa-exchange-alt"></i>
+												</a>
+												<a href="#" title="Share">
+													<i class="fas fa-share-alt"></i>
+												</a>
+												<a href="#" title="Favorites">
+													<i class="fa fa-heart-o"></i>
+												</a>
+											</div>
+										</div>
+										<div class="footer">
+											<a href="agent-details.html">
+												<i class="fa fa-user"></i> {{ listing.realtor }}
+											</a>
+											<span>
+											<i class="fa fa-calendar"></i> {{ listing.list_date | timesince }}
+										</span>
+										</div>
+									</div>
+								</div>
+							</div>
+					{% endfor %}
+				{% else %}
+					<div class="col-md-12">
+						<p>No Listings Available</p>
+					</div>
+				{% endif %}
+			</div>
+		</div>
+	</section>
+	<!-- END SECTION RECENTLY PROPERTIES -->
+
+	<!-- START SECTION SERVICES -->
+	<section class="services-home bg-white" id="property_services">
+		<div class="container">
+			<div class="section-title">
+				<h3>Property</h3>
+				<h2>Services</h2>
+			</div>
+			<div class="row">
+				<div class="col-lg-4 col-md-12 m-top-0 m-bottom-40">
+					<div class="service bg-light-2 border-1 border-light box-shadow-1 box-shadow-2-hover">
+						<div class="media">
+							<i class="fa fa-home bg-base text-white rounded-100 box-shadow-1 p-top-5 p-bottom-5 p-right-5 p-left-5"></i>
+						</div>
+						<div class="agent-section p-top-35 p-bottom-30 p-right-25 p-left-25">
+							<h4 class="m-bottom-15 text-bold-700">Houses</h4>
+							<p>Nonec pede justo fringilla vel aliquet nec vulputate eget arcu in enim justo rhoncus ut imperdiet venenatis vitae justo.</p>
+							<a class="text-base text-base-dark-hover text-size-13" href="properties-full-list.html">Read More <i class="fa fa-long-arrow-right"></i></a>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-4 col-md-12 m-top-40 m-bottom-40">
+					<div class="service bg-light-2 border-1 border-light box-shadow-1 box-shadow-2-hover">
+						<div class="media">
+							<i class="fas fa-building bg-base text-white rounded-100 box-shadow-1 p-top-5 p-bottom-5 p-right-5 p-left-5"></i>
+						</div>
+						<div class="agent-section p-top-35 p-bottom-30 p-right-25 p-left-25">
+							<h4 class="m-bottom-15 text-bold-700">Apartments</h4>
+							<p>Nonec pede justo fringilla vel aliquet nec vulputate eget arcu in enim justo rhoncus ut imperdiet venenatis vitae justo.</p>
+							<a class="text-base text-base-dark-hover text-size-13" href="properties-full-list.html">Read More <i class="fa fa-long-arrow-right"></i></a>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-4 col-md-12 m-top-40 m-bottom-40 commercial">
+					<div class="service bg-light-2 border-1 border-light box-shadow-1 box-shadow-2-hover">
+						<div class="media">
+							<i class="fas fa-warehouse bg-base text-white rounded-100 box-shadow-1 p-top-5 p-bottom-5 p-right-5 p-left-5"></i>
+						</div>
+						<div class="agent-section p-top-35 p-bottom-30 p-right-25 p-left-25">
+							<h4 class="m-bottom-15 text-bold-700">Commercial</h4>
+							<p>Nonec pede justo fringilla vel aliquet nec vulputate eget arcu in enim justo rhoncus ut imperdiet venenatis vitae justo.</p>
+							<a class="text-base text-base-dark-hover text-size-13" href="properties-full-list.html">Read More <i class="fa fa-long-arrow-right"></i></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- END SECTION SERVICES -->
+
+	<!-- START SECTION FEATURED PROPERTIES -->
+	<section class="featured portfolio" id="featured_properties">
+		<div class="container">
+			<div class="row">
+				<div class="section-title col-md-5">
+					<h3>Featured</h3>
+					<h2>Properties</h2>
+				</div>
+			</div>
+			<div class="row portfolio-items">
+				<div class="item col-lg-4 col-md-6 col-xs-12 landscapes sale">
+					<div class="project-single">
+						<div class="project-inner project-head">
+							<div class="project-bottom">
+								<h4><a href="properties-details.html">View Property</a><span class="category">Real Estate</span></h4>
+							</div>
+							<div class="button-effect">
+								<a href="properties-details.html" class="btn"><i class="fa fa-link"></i></a>
+								<a href="https://www.youtube.com/watch?v=2xHQqYRcrx4" class="btn popup-video popup-youtube"><i class="fas fa-video"></i></a>
+								<a class="img-poppu btn" href="images/feature-properties/fp-1.jpg" data-rel="lightcase:myCollection:slideshow"><i class="fa fa-photo"></i></a>
+							</div>
+							<div class="homes">
+								<!-- homes img -->
+								<a href="properties-details.html" class="homes-img">
+									<div class="homes-tag button alt featured">Featured</div>
+									<div class="homes-tag button alt sale">For Sale</div>
+									<div class="homes-price">Family Home</div>
+									<img src="images/feature-properties/fp-1.jpg" alt="home-1" class="img-responsive">
+								</a>
+							</div>
+						</div>
+						<!-- homes content -->
+						<div class="homes-content">
+							<!-- homes address -->
+							<h3>Real House Luxury Villa</h3>
+							<p class="homes-address mb-3">
+								<a href="properties-details.html">
+									<i class="fa fa-map-marker"></i><span>Est St, 77 - Central Park South, NYC</span>
+								</a>
+							</p>
+							<!-- homes List -->
+							<ul class="homes-list clearfix">
+								<li>
+									<i class="fa fa-bed" aria-hidden="true"></i>
+									<span>6 Bedrooms</span>
+								</li>
+								<li>
+									<i class="fa fa-bath" aria-hidden="true"></i>
+									<span>3 Bathrooms</span>
+								</li>
+								<li>
+									<i class="fa fa-object-group" aria-hidden="true"></i>
+									<span>720 sq ft</span>
+								</li>
+								<li>
+									<i class="fas fa-warehouse" aria-hidden="true"></i>
+									<span>2 Garages</span>
+								</li>
+							</ul>
+							<!-- Price -->
+							<div class="price-properties">
+								<h3 class="title mt-3">
+                                <a href="properties-details.html">$ 230,000</a>
+                                </h3>
+								<div class="compare">
+									<a href="#" title="Compare">
+										<i class="fas fa-exchange-alt"></i>
+									</a>
+									<a href="#" title="Share">
+										<i class="fas fa-share-alt"></i>
+									</a>
+									<a href="#" title="Favorites">
+										<i class="fa fa-heart-o"></i>
+									</a>
+								</div>
+							</div>
+							<div class="footer">
+								<a href="agent-details.html">
+									<i class="fa fa-user"></i> Jhon Doe
+								</a>
+								<span>
+                                <i class="fa fa-calendar"></i> 2 months ago
+                            </span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="item col-lg-4 col-md-6 col-xs-12 people rent">
+					<div class="project-single">
+						<div class="project-inner project-head">
+							<div class="project-bottom">
+								<h4><a href="properties-details.html">View Property</a><span class="category">Real Estate</span></h4>
+							</div>
+							<div class="button-effect">
+								<a href="properties-details.html" class="btn"><i class="fa fa-link"></i></a>
+								<a href="https://www.youtube.com/watch?v=2xHQqYRcrx4" class="btn popup-video popup-youtube"><i class="fas fa-video"></i></a>
+								<a class="img-poppu btn" href="images/feature-properties/fp-2.jpg" data-rel="lightcase:myCollection:slideshow"><i class="fa fa-photo"></i></a>
+							</div>
+							<div class="homes">
+								<!-- homes img -->
+								<a href="properties-details.html" class="homes-img">
+									<div class="homes-tag button alt featured">Featured</div>
+									<div class="homes-tag button sale rent">For Rent</div>
+									<div class="homes-price">Family Home</div>
+									<img src="images/feature-properties/fp-2.jpg" alt="home-1" class="img-responsive">
+								</a>
+							</div>
+						</div>
+						<!-- homes content -->
+						<div class="homes-content">
+							<!-- homes address -->
+							<h3>Real House Luxury Villa</h3>
+							<p class="homes-address mb-3">
+								<a href="properties-details.html">
+									<i class="fa fa-map-marker"></i><span>Est St, 77 - Central Park South, NYC</span>
+								</a>
+							</p>
+							<!-- homes List -->
+							<ul class="homes-list clearfix">
+								<li>
+									<i class="fa fa-bed" aria-hidden="true"></i>
+									<span>6 Bedrooms</span>
+								</li>
+								<li>
+									<i class="fa fa-bath" aria-hidden="true"></i>
+									<span>3 Bathrooms</span>
+								</li>
+								<li>
+									<i class="fa fa-object-group" aria-hidden="true"></i>
+									<span>720 sq ft</span>
+								</li>
+								<li>
+									<i class="fas fa-warehouse" aria-hidden="true"></i>
+									<span>2 Garages</span>
+								</li>
+							</ul>
+							<!-- Price -->
+							<div class="price-properties">
+								<h3 class="title mt-3">
+                                <a href="properties-details.html">$ 230,000</a>
+                                </h3>
+								<div class="compare">
+									<a href="#" title="Compare">
+										<i class="fas fa-exchange-alt"></i>
+									</a>
+									<a href="#" title="Share">
+										<i class="fas fa-share-alt"></i>
+									</a>
+									<a href="#" title="Favorites">
+										<i class="fa fa-heart-o"></i>
+									</a>
+								</div>
+							</div>
+							<div class="footer">
+								<a href="agent-details.html">
+									<i class="fa fa-user"></i> Jhon Doe
+								</a>
+								<span>
+                                <i class="fa fa-calendar"></i> 2 months ago
+                            </span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="item col-lg-4 col-md-6 col-xs-12 people landscapes sale">
+					<div class="project-single">
+						<div class="project-inner project-head">
+							<div class="project-bottom">
+								<h4><a href="properties-details.html">View Property</a><span class="category">Real Estate</span></h4>
+							</div>
+							<div class="button-effect">
+								<a href="properties-details.html" class="btn"><i class="fa fa-link"></i></a>
+								<a href="https://www.youtube.com/watch?v=2xHQqYRcrx4" class="btn popup-video popup-youtube"><i class="fas fa-video"></i></a>
+								<a class="img-poppu btn" href="images/feature-properties/fp-3.jpg" data-rel="lightcase:myCollection:slideshow"><i class="fa fa-photo"></i></a>
+							</div>
+							<div class="homes">
+								<!-- homes img -->
+								<a href="properties-details.html" class="homes-img">
+									<div class="homes-tag button alt featured">Featured</div>
+									<div class="homes-tag button alt sale">For Sale</div>
+									<div class="homes-price">Family Home</div>
+									<img src="images/feature-properties/fp-3.jpg" alt="home-1" class="img-responsive">
+								</a>
+							</div>
+						</div>
+						<!-- homes content -->
+						<div class="homes-content">
+							<!-- homes address -->
+							<h3>Real House Luxury Villa</h3>
+							<p class="homes-address mb-3">
+								<a href="properties-details.html">
+									<i class="fa fa-map-marker"></i><span>Est St, 77 - Central Park South, NYC</span>
+								</a>
+							</p>
+							<!-- homes List -->
+							<ul class="homes-list clearfix">
+								<li>
+									<i class="fa fa-bed" aria-hidden="true"></i>
+									<span>6 Bedrooms</span>
+								</li>
+								<li>
+									<i class="fa fa-bath" aria-hidden="true"></i>
+									<span>3 Bathrooms</span>
+								</li>
+								<li>
+									<i class="fa fa-object-group" aria-hidden="true"></i>
+									<span>720 sq ft</span>
+								</li>
+								<li>
+									<i class="fas fa-warehouse" aria-hidden="true"></i>
+									<span>2 Garages</span>
+								</li>
+							</ul>
+							<!-- Price -->
+							<div class="price-properties">
+								<h3 class="title mt-3">
+                                <a href="properties-details.html">$ 230,000</a>
+                                </h3>
+								<div class="compare">
+									<a href="#" title="Compare">
+										<i class="fas fa-exchange-alt"></i>
+									</a>
+									<a href="#" title="Share">
+										<i class="fas fa-share-alt"></i>
+									</a>
+									<a href="#" title="Favorites">
+										<i class="fa fa-heart-o"></i>
+									</a>
+								</div>
+							</div>
+							<div class="footer">
+								<a href="agent-details.html">
+									<i class="fa fa-user"></i> Jhon Doe
+								</a>
+								<span>
+                                <i class="fa fa-calendar"></i> 2 months ago
+                            </span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="item col-lg-4 col-md-6 col-xs-12 people landscapes rent no-pb">
+					<div class="project-single no-mb">
+						<div class="project-inner project-head">
+							<div class="project-bottom">
+								<h4><a href="properties-details.html">View Property</a><span class="category">Real Estate</span></h4>
+							</div>
+							<div class="button-effect">
+								<a href="properties-details.html" class="btn"><i class="fa fa-link"></i></a>
+								<a href="https://www.youtube.com/watch?v=2xHQqYRcrx4" class="btn popup-video popup-youtube"><i class="fas fa-video"></i></a>
+								<a class="img-poppu btn" href="images/feature-properties/fp-4.jpg" data-rel="lightcase:myCollection:slideshow"><i class="fa fa-photo"></i></a>
+							</div>
+							<div class="homes">
+								<!-- homes img -->
+								<a href="properties-details.html" class="homes-img">
+									<div class="homes-tag button alt featured">Featured</div>
+									<div class="homes-tag button sale rent">For Rent</div>
+									<div class="homes-price">Family Home</div>
+									<img src="images/feature-properties/fp-4.jpg" alt="home-1" class="img-responsive">
+								</a>
+							</div>
+						</div>
+						<!-- homes content -->
+						<div class="homes-content">
+							<!-- homes address -->
+							<h3>Real House Luxury Villa</h3>
+							<p class="homes-address mb-3">
+								<a href="properties-details.html">
+									<i class="fa fa-map-marker"></i><span>Est St, 77 - Central Park South, NYC</span>
+								</a>
+							</p>
+							<!-- homes List -->
+							<ul class="homes-list clearfix">
+								<li>
+									<i class="fa fa-bed" aria-hidden="true"></i>
+									<span>6 Bedrooms</span>
+								</li>
+								<li>
+									<i class="fa fa-bath" aria-hidden="true"></i>
+									<span>3 Bathrooms</span>
+								</li>
+								<li>
+									<i class="fa fa-object-group" aria-hidden="true"></i>
+									<span>720 sq ft</span>
+								</li>
+								<li>
+									<i class="fas fa-warehouse" aria-hidden="true"></i>
+									<span>2 Garages</span>
+								</li>
+							</ul>
+							<!-- Price -->
+							<div class="price-properties">
+								<h3 class="title mt-3">
+                                <a href="properties-details.html">$ 230,000</a>
+                                </h3>
+								<div class="compare">
+									<a href="#" title="Compare">
+										<i class="fas fa-exchange-alt"></i>
+									</a>
+									<a href="#" title="Share">
+										<i class="fas fa-share-alt"></i>
+									</a>
+									<a href="#" title="Favorites">
+										<i class="fa fa-heart-o"></i>
+									</a>
+								</div>
+							</div>
+							<div class="footer">
+								<a href="agent-details.html">
+									<i class="fa fa-user"></i> Jhon Doe
+								</a>
+								<span>
+                                <i class="fa fa-calendar"></i> 2 months ago
+                            </span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="item col-lg-4 col-md-6 col-xs-12 people sale no-pb">
+					<div class="project-single no-mb">
+						<div class="project-inner project-head">
+							<div class="project-bottom">
+								<h4><a href="properties-details.html">View Property</a><span class="category">Real Estate</span></h4>
+							</div>
+							<div class="button-effect">
+								<a href="properties-details.html" class="btn"><i class="fa fa-link"></i></a>
+								<a href="https://www.youtube.com/watch?v=2xHQqYRcrx4" class="btn popup-video popup-youtube"><i class="fas fa-video"></i></a>
+								<a class="img-poppu btn" href="images/feature-properties/fp-5.jpg" data-rel="lightcase:myCollection:slideshow"><i class="fa fa-photo"></i></a>
+							</div>
+							<div class="homes">
+								<!-- homes img -->
+								<a href="properties-details.html" class="homes-img">
+									<div class="homes-tag button alt featured">Featured</div>
+									<div class="homes-tag button alt sale">For Sale</div>
+									<div class="homes-price">Family Home</div>
+									<img src="images/feature-properties/fp-5.jpg" alt="home-1" class="img-responsive">
+								</a>
+							</div>
+						</div>
+						<!-- homes content -->
+						<div class="homes-content">
+							<!-- homes address -->
+							<h3>Real House Luxury Villa</h3>
+							<p class="homes-address mb-3">
+								<a href="properties-details.html">
+									<i class="fa fa-map-marker"></i><span>Est St, 77 - Central Park South, NYC</span>
+								</a>
+							</p>
+							<!-- homes List -->
+							<ul class="homes-list clearfix">
+								<li>
+									<i class="fa fa-bed" aria-hidden="true"></i>
+									<span>6 Bedrooms</span>
+								</li>
+								<li>
+									<i class="fa fa-bath" aria-hidden="true"></i>
+									<span>3 Bathrooms</span>
+								</li>
+								<a href="" class="btn btn-primary btn-lg btn-block"> More Info </a>
+								<li>
+									<i class="fa fa-object-group" aria-hidden="true"></i>
+									<span>720 sq ft</span>
+								</li>
+								<li>
+									<a href="" class="btn btn-primary btn-lg btn-block"> More Info </a>
+									<i class="fas fa-warehouse" aria-hidden="true"></i>
+									<span>2 Garages</span>
+								</li>
+							</ul>
+							<!-- Price -->
+							<div class="price-properties">
+								<h3 class="title mt-3">
+                                <a href="properties-details.html">$ 230,000</a>
+                                </h3>
+								<div class="compare">
+									<a href="#" title="Compare">
+										<i class="fas fa-exchange-alt"></i>
+									</a>
+									<a href="#" title="Share">
+										<i class="fas fa-share-alt"></i>
+									</a>
+									<a href="#" title="Favorites">
+										<i class="fa fa-heart-o"></i>
+									</a>
+								</div>
+							</div>
+							<div class="footer">
+								<a href="agent-details.html">
+									<i class="fa fa-user"></i> Jhon Doe
+								</a>
+								<span>
+                                <i class="fa fa-calendar"></i> 2 months ago
+                            </span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="item col-lg-4 col-md-6 it2 col-xs-12 web rent no-pb">
+					<div class="project-single no-mb last">
+						<div class="project-inner project-head">
+							<div class="project-bottom">
+								<h4><a href="properties-details.html">View Property</a><span class="category">Real Estate</span></h4>
+							</div>
+							<div class="button-effect">
+								<a href="properties-details.html" class="btn"><i class="fa fa-link"></i></a>
+								<a href="https://www.youtube.com/watch?v=2xHQqYRcrx4" class="btn popup-video popup-youtube"><i class="fas fa-video"></i></a>
+								<a class="img-poppu btn" href="images/feature-properties/fp-6.jpg" data-rel="lightcase:myCollection:slideshow"><i class="fa fa-photo"></i></a>
+							</div>
+							<div class="homes">
+								<!-- homes img -->
+								<a href="properties-details.html" class="homes-img">
+									<div class="homes-tag button alt featured">Featured</div>
+									<div class="homes-tag button sale rent">For Rent</div>
+									<div class="homes-price">Family Home</div>
+									<img src="images/feature-properties/fp-6.jpg" alt="home-1" class="img-responsive">
+								</a>
+							</div>
+						</div>
+						<!-- homes content -->
+						<div class="homes-content">
+							<!-- homes address -->
+							<h3>Real House Luxury Villa</h3>
+							<p class="homes-address mb-3">
+								<a href="properties-details.html">
+									<i class="fa fa-map-marker"></i><span>Est St, 77 - Central Park South, NYC</span>
+								</a>
+							</p>
+							<!-- homes List -->
+							<ul class="homes-list clearfix">
+								<li>
+									<i class="fa fa-bed" aria-hidden="true"></i>
+									<span>6 Bedrooms</span>
+								</li>
+								<li>
+									<i class="fa fa-bath" aria-hidden="true"></i>
+									<span>3 Bathrooms</span>
+								</li>
+								<li>
+									<i class="fa fa-object-group" aria-hidden="true"></i>
+									<span>720 sq ft</span>
+								</li>
+								<li>
+									<i class="fas fa-warehouse" aria-hidden="true"></i>
+									<span>2 Garages</span>
+								</li>
+							</ul>
+							<!-- Price -->
+							<div class="price-properties">
+								<h3 class="title mt-3">
+                                <a href="properties-details.html">$ 230,000</a>
+                                </h3>
+								<div class="compare">
+									<a href="#" title="Compare">
+										<i class="fas fa-exchange-alt"></i>
+									</a>
+									<a href="#" title="Share">
+										<i class="fas fa-share-alt"></i>
+									</a>
+									<a href="#" title="Favorites">
+										<i class="fa fa-heart-o"></i>
+									</a>
+								</div>
+							</div>
+							<div class="footer">
+								<a href="agent-details.html">
+									<i class="fa fa-user"></i> Jhon Doe
+								</a>
+								<span>
+                                <i class="fa fa-calendar"></i> 2 months ago
+                            </span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- END SECTION FEATURED PROPERTIES -->
+
+	<!-- START SECTION POPULAR PLACES -->
+	<section class="popular-places" id="most_popular_places">
+		<div class="container">
+			<div class="section-title">
+				<h3>Most Popular</h3>
+				<h2>Places</h2>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+				</div>
+				<div class="col-lg-4 col-md-6">
+					<!-- Image Box -->
+					<a href="properties-right-sidebar.html" class="img-box hover-effect">
+						<img src="images/popular-places/1.jpg" class="img-responsive" alt="">
+						<!-- Badge -->
+						<div class="listing-badges">
+							<span class="featured">Featured</span>
+						</div>
+						<div class="img-box-content visible">
+							<h4>New York City </h4>
+							<span>203 Properties</span>
+						</div>
+					</a>
+				</div>
+				<div class="col-lg-8 col-md-6">
+					<!-- Image Box -->
+					<a href="properties-right-sidebar.html" class="img-box hover-effect">
+						<img src="images/popular-places/2.jpg" class="img-responsive" alt="">
+						<div class="img-box-content visible">
+							<h4>Los Angeles</h4>
+							<span>307 Properties</span>
+						</div>
+					</a>
+				</div>
+				<div class="col-lg-8 col-md-6">
+					<!-- Image Box -->
+					<a href="properties-right-sidebar.html" class="img-box hover-effect no-mb">
+						<img src="images/popular-places/3.jpg" class="img-responsive" alt="">
+						<div class="img-box-content visible">
+							<h4>San Francisco </h4>
+							<span>409 Properties</span>
+						</div>
+					</a>
+				</div>
+				<div class="col-lg-4 col-md-6">
+					<!-- Image Box -->
+					<a href="properties-right-sidebar.html" class="img-box hover-effect no-mb x3">
+						<img src="images/popular-places/4.jpg" class="img-responsive" alt="">
+						<!-- Badge -->
+						<div class="listing-badges">
+							<span class="featured">Featured</span>
+						</div>
+						<div class="img-box-content visible">
+							<h4>Miami</h4>
+							<span>507 Properties</span>
+						</div>
+					</a>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- END SECTION POPULAR PLACES -->
+
+	<!-- START SECTION AGENTS -->
+	<section class="team">
+			<div class="container">
+				<div class="section-title col-md-5">
+					<h3>Meet Our</h3>
+					<h2>Agents</h2>
+				</div>
+			<div class="container">
+			  <div class="row text-center">
+				
+			{% if realtors %}
+				{% for realtor in realtors %}
+					<div class="col-md-4">
+						<img src="{{ realtor.photo.url }}" alt="" class="rounded-circle mb-3" >
+						<h4>{{ realtor.name }}</h4>
+						<p class="text-success">
+							<i class="fas fa-award text-success mb-3"></i> Realtor</p>
+						<hr>
+						<p>
+							<i class="fas fa-phone"></i> {{ realtor.phone }}</p>
+						<p>
+						<i class="fas fa-envelope-open"></i> {{ realtor.email }}</p>
+					</div>
+				{% endfor %}
+			{% else %}
+				<div class="col-md-12">
+					<p>No Realtors Available</p>
+				</div>
+			{% endif %}
+			</div>
+		</div>
+	</section>
+	<!-- END SECTION AGENTS -->
+
+	<!-- START SECTION TOP LOCATION -->
+	<section class="top-location" id="sold_houses">
+		<h4>SOLD HOUSES</h4>
+		<div class="owl-carousel owl-theme" id="tp-carousel">
+			<div class="item">
+				<div class="tp-caption">
+					<h6>New York City</h6>
+					<strong>Property For Sale</strong>
+					<p>Price:&nbsp; $230,000</p>
+				</div>
+				<img src="images/blog/b-1.jpg" alt="">
+			</div>
+			<div class="item">
+				<div class="tp-caption">
+					<h6>Los Angeles</h6>
+					<strong>Property For Sale</strong>
+					<p>Price:&nbsp; $230,000</p>
+				</div>
+				<img src="images/blog/b-2.jpg" alt="">
+			</div>
+			<div class="item">
+				<div class="tp-caption">
+					<h6>San Francisco</h6>
+					<strong>Property For Sale</strong>
+					<p>Price:&nbsp; $230,000</p>
+				</div>
+				<img src="images/blog/b-3.jpg" alt="">
+			</div>
+			<div class="item">
+				<div class="tp-caption">
+					<h6>Miami</h6>
+					<strong>Property For Sale</strong>
+					<p>Price:&nbsp; $230,000</p>
+				</div>
+				<img src="images/blog/b-4.jpg" alt="">
+			</div>
+			<div class="item">
+				<div class="tp-caption">
+					<h6>Chicago</h6>
+					<strong>Property For Sale</strong>
+					<p>Price:&nbsp; $230,000</p>
+				</div>
+				<img src="images/blog/b-5.jpg" alt="">
+			</div>
+			<div class="item">
+				<div class="tp-caption">
+					<h6>Los Angeles</h6>
+					<strong>Property For Sale</strong>
+					<p>Price:&nbsp; $230,000</p>
+				</div>
+				<img src="images/blog/b-6.jpg" alt="">
+			</div>
+			<div class="item">
+				<div class="tp-caption">
+					<h6>San Francisco</h6>
+					<strong>Property For Sale</strong>
+					<p>Price:&nbsp; $230,000</p>
+				</div>
+				<img src="images/blog/b-7.jpg" alt="">
+			</div>
+			<div class="item">
+				<div class="tp-caption">
+					<h6>Miami</h6>
+					<strong>Property For Sale</strong>
+					<p>Price:&nbsp; $230,000</p>
+				</div>
+				<img src="images/blog/b-8.jpg" alt="">
+			</div>
+		</div>
+	</section>
+	<!-- END SECTION TOP LOCATION -->
+
+	
+	<!-- START SECTION TESTIMONIALS -->
+	<section class="testimonials" id="happy_customers">
+		<div class="container">
+			<div class="section-title">
+				<h3>Happy</h3>
+				<h2>Customers</h2>
+			</div>
+			<div class="owl-carousel style1">
+				<div class="test-1">
+					<h3>Lisa Smith</h3>
+					<img src="images/testimonials/ts-1.jpg" alt="">
+					<h6 class="mt-2">New York</h6>
+					<ul class="starts text-center mb-2">
+						<li><i class="fa fa-star"></i>
+						</li>
+						<li><i class="fa fa-star"></i>
+						</li>
+						<li><i class="fa fa-star"></i>
+						</li>
+						<li><i class="fa fa-star"></i>
+						</li>
+						<li><i class="fa fa-star"></i>
+						</li>
+					</ul>
+					<p>Lorem ipsum dolor sit amet, ligula magna at etiam aliquip venenatis. Vitae sit felis donec, suscipit tortor et sapien donec.</p>
+				</div>
+				<div class="test-1">
+					<h3>Jhon Morris</h3>
+					<img src="images/testimonials/ts-2.jpg" alt="">
+					<h6 class="mt-2">Los Angeles</h6>
+					<ul class="starts text-center mb-2">
+						<li><i class="fa fa-star"></i>
+						</li>
+						<li><i class="fa fa-star"></i>
+						</li>
+						<li><i class="fa fa-star"></i>
+						</li>
+						<li><i class="fa fa-star"></i>
+						</li>
+						<li><i class="fa fa-star-o"></i>
+						</li>
+					</ul>
+					<p>Lorem ipsum dolor sit amet, ligula magna at etiam aliquip venenatis. Vitae sit felis donec, suscipit tortor et sapien donec.</p>
+				</div>
+				<div class="test-1">
+					<h3>Mary Deshaw</h3>
+					<img src="images/testimonials/ts-3.jpg" alt="">
+					<h6 class="mt-2">Chicago</h6>
+					<ul class="starts text-center mb-2">
+						<li><i class="fa fa-star"></i>
+						</li>
+						<li><i class="fa fa-star"></i>
+						</li>
+						<li><i class="fa fa-star"></i>
+						</li>
+						<li><i class="fa fa-star"></i>
+						</li>
+						<li><i class="fa fa-star"></i>
+						</li>
+					</ul>
+					<p>Lorem ipsum dolor sit amet, ligula magna at etiam aliquip venenatis. Vitae sit felis donec, suscipit tortor et sapien donec.</p>
+				</div>
+				<div class="test-1">
+					<h3>Gary Steven</h3>
+					<img src="images/testimonials/ts-4.jpg" alt="">
+					<h6 class="mt-2">Philadelphia</h6>
+					<ul class="starts text-center mb-2">
+						<li><i class="fa fa-star"></i>
+						</li>
+						<li><i class="fa fa-star"></i>
+						</li>
+						<li><i class="fa fa-star"></i>
+						</li>
+						<li><i class="fa fa-star"></i>
+						</li>
+						<li><i class="fa fa-star-o"></i>
+						</li>
+					</ul>
+					<p>Lorem ipsum dolor sit amet, ligula magna at etiam aliquip venenatis. Vitae sit felis donec, suscipit tortor et sapien donec.</p>
+				</div>
+				<div class="test-1">
+					<h3>Cristy Mayer</h3>
+					<img src="images/testimonials/ts-5.jpg" alt="">
+					<h6 class="mt-2">San Francisco</h6>
+					<ul class="starts text-center mb-2">
+						<li><i class="fa fa-star"></i>
+						</li>
+						<li><i class="fa fa-star"></i>
+						</li>
+						<li><i class="fa fa-star"></i>
+						</li>
+						<li><i class="fa fa-star"></i>
+						</li>
+						<li><i class="fa fa-star"></i>
+						</li>
+					</ul>
+					<p>Lorem ipsum dolor sit amet, ligula magna at etiam aliquip venenatis. Vitae sit felis donec, suscipit tortor et sapien donec.</p>
+				</div>
+				<div class="test-1">
+					<h3>Ichiro Tasaka</h3>
+					<img src="images/testimonials/ts-6.jpg" alt="">
+					<h6 class="mt-2">Houston</h6>
+					<ul class="starts text-center mb-2">
+						<li><i class="fa fa-star"></i>
+						</li>
+						<li><i class="fa fa-star"></i>
+						</li>
+						<li><i class="fa fa-star"></i>
+						</li>
+						<li><i class="fa fa-star"></i>
+						</li>
+						<li><i class="fa fa-star-o"></i>
+						</li>
+					</ul>
+					<p>Lorem ipsum dolor sit amet, ligula magna at etiam aliquip venenatis. Vitae sit felis donec, suscipit tortor et sapien donec.</p>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- END SECTION TESTIMONIALS -->
+
+
+	<!-- START SECTION COUNTER UP -->
+	<section class="counterup" id="counter">
+		<h2>OUR ACHIEVEMENTS</h2>
+		<br>
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-3 col-md-6 col-xs-12">
+					<div class="countr">
+						<i class="fa fa-home" aria-hidden="true"></i>
+						<div class="count-me">
+							<p class="counter text-left">300</p>
+							<h3>Sold Houses</h3>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-6 col-xs-12">
+					<div class="countr">
+						<i class="fa fa-list" aria-hidden="true"></i>
+						<div class="count-me">
+							<p class="counter text-left">400</p>
+							<h3>Daily Listings</h3>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-6 col-xs-12">
+					<div class="countr mb-0">
+						<i class="fa fa-users" aria-hidden="true"></i>
+						<div class="count-me">
+							<p class="counter text-left">250</p>
+							<h3>Expert Agents</h3>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-6 col-xs-12">
+					<div class="countr mb-0 last">
+						<i class="fa fa-trophy" aria-hidden="true"></i>
+						<div class="count-me">
+							<p class="counter text-left">200</p>
+							<h3>Won Awars</h3>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- END SECTION COUNTER UP -->
+
+	<!-- START SECTION NEWSLETTER -->
+	<section class="subscribe" id="newsletter">
+		<div class="realhome_subscribe">
+			<div class="realhome container">
+				<h2>Subscribe for Our Newsletter</h2>
+				<div class="row align-center">
+					<div class="col-lg-6 col-md-6">
+						<form class="realhome_form_subscribe mailchimp form-inline" method="post">
+							<input type="email" id="subscribeEmail" name="EMAIL" class="form_email" placeholder="Enter Your Email">
+							<button type="submit" value="Subscribe">Submit</button>
+							<label for="subscribeEmail" class="error"></label>
+							<p class="subscription-success"></p>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- END SECTION NEWSLETTER -->
+	
+	
+{% endblock %}

@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+
+{% load humanize %}
+
+{% block content %}
+<section id="showcase-inner" class="showcase-search text-white py-5">
+  <div class="container">
+    <div class="row text-center">
+      <div class="col-md-12">
+        <form action="{% url 'search' %}">
+          <!-- Form Row 1 -->
+          <div class="form-row">
+            <div class="col-md-4 mb-3">
+              <label class="sr-only">Keywords</label>
+              <input type="text" name="keywords" class="form-control" placeholder="Keyword (Pool, Garage, etc)">
+            </div>
+
+            <div class="col-md-4 mb-3">
+              <label class="sr-only">Type</label>
+              <select name="house_type" class="form-control">
+                <option selected="true" disabled="disabled">Any Type</option>
+                {% for key,value in type_choices.items %}
+                <option value="{{ key }}">{{ value }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="sr-only">State</label>
+              <select name="state" class="form-control">
+                <option selected="true" disabled="disabled">State (All)</option>
+                {% for key,value in state_choices.items %}
+                <option value="{{ key }}">{{ value }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <!-- Form Row 2 -->
+          <div class="form-row">
+            <div class="col-md-6 mb-3">
+              <label class="sr-only">Bedrooms</label>
+              <select name="bedrooms" class="form-control">
+                <option selected="true" disabled="disabled">Bedrooms (Any)</option>
+                {% for key,value in bedroom_choices.items %}
+                <option value="{{ key }}">{{ value }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="sr-only">Bathrooms</label>
+              <select name="bathrooms" class="form-control">
+                <option selected="true" disabled="disabled">Bathrooms (Any)</option>
+                {% for key,value in bathroom_choices.items %}
+                <option value="{{ key }}">{{ value }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md mb-3">
+              <label class="sr-only">Price</label>
+              <select name="price" class="form-control">
+                <option selected="true" disabled="disabled">Price (Any)</option>
+                {% for key,value in price_choices.items %}
+                <option value="{{ key }}">{{ value }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <button class="btn btn-secondary btn-block mt-4" type="submit">Submit form</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Breadcrumb -->
+<section id="bc" class="mt-3">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="index.html">
+            <i class="fas fa-home"></i> Home</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="listings.html">Browse Listings</a>
+        </li>
+        <li class="breadcrumb-item active"> Search Results</li>
+      </ol>
+    </nav>
+  </div>
+</section>
+
+<!-- Listings -->
+<section class="recently portfolio" id="search">
+  <div class="container-fluid">
+    <div class="section-title">
+      <h3>Search</h3>
+      <h2>OUR PROPERTIES</h2>
+    </div>
+    <div class="row portfolio-items">
+      {% if listings %}
+        {% for listing in listings %}
+          <!-- Listings -->
+          <div class="item col-lg-3 col-md-6 col-xs-12 landscapes">
+              <div class="project-single">
+                <div class="project-inner project-head">
+                  <div class="project-bottom">
+                    <h4><a href="{% url 'listing' listing.id %}">View Property</a><span class="category">Real Estate</span></h4>
+                  </div>
+                  <div class="button-effect">
+                    <a href="{{ listing.video.url}}" class="btn popup-video popup-youtube"><i class="fas fa-video"></i></a>
+                    
+                  </div>
+                  <div class="homes">
+                    <!-- homes img -->
+                    <a href="properties-details.html" class="homes-img">
+                      <img src="{{ listing.photo_main.url }}" alt="home-1" class="img-responsive">
+                    </a>
+                  </div>
+                </div>
+                <!-- homes content -->
+                <div class="homes-content">
+                  <!-- homes address -->
+                  <h3>{{ listing.title }}</h3>
+                  <p class="homes-address mb-3">
+                    <a href="properties-details.html">
+                      <i class="fa fa-map-marker"></i><span>{{ listing.address }}</span>
+                    </a>
+                  </p>
+                  <!-- homes List -->
+                  <ul class="homes-list clearfix">
+                    <li>
+                      <i class="fa fa-bed" aria-hidden="true"></i>
+                      <span>Bedrooms: {{ listing.bedrooms }}</span>
+                    </li>
+                    <li>
+                      <i class="fa fa-bath" aria-hidden="true"></i>
+                      <span>Bathrooms: {{ listing.bathrooms }}</span>
+                    </li>
+                    <li>
+                      <i class="fa fa-object-group" aria-hidden="true"></i>
+                      <span>Sqft: {{ listing.sqft }}</span>
+                    </li>
+                    <li>
+                      <i class="fas fa-warehouse" aria-hidden="true"></i>
+                      <span>Garage: {{ listing.garage }}</span>
+                    </li>
+                  </ul>
+                  <!-- Price -->
+                  <div class="price-properties">
+                    <h3 class="title mt-3">
+                    <a href="properties-details.html">₹ {{ listing.price | intcomma }}</a>
+                    </h3>
+                    <div class="compare">
+                      <a href="#" title="Compare">
+                        <i class="fas fa-exchange-alt"></i>
+                      </a>
+                      <a href="#" title="Share">
+                        <i class="fas fa-share-alt"></i>
+                      </a>
+                      <a href="#" title="Favorites">
+                        <i class="fa fa-heart-o"></i>
+                      </a>
+                    </div>
+                  </div>
+                  <div class="footer">
+                    <a href="agent-details.html">
+                      <i class="fa fa-user"></i> {{ listing.realtor }}
+                    </a>
+                    <span>
+                    <i class="fa fa-calendar"></i> {{ listing.list_date | timesince }}
+                  </span>
+                  </div>
+                </div>
+              </div>
+              <br><br>
+            </div>
+            
+        {% endfor %}
+      {% else %}
+        <div class="col-md-12">
+          <p>No Listings Available</p>
+        </div>
+      {% endif %}
+      
+    </div>
+    <nav aria-label="...">
+      {% if listings.has_other_pages %}
+        <ul class="pagination">
+          {% if listings.has_previous %}
+            <li class="page-item">
+              <a href="?page={{listings.previous_page_number}}" class="page-link">&laquo;</a>
+            </li>
+          {% else %}
+            <li class="page-item disabled">
+              <a class="page-link">&laquo;</a>
+            </li>
+          {% endif %}
+          
+          {% for i in listings.paginator.page_range %}
+            {% if listings.number == i %}
+              <li class="li.page-item active">
+                <a class="page-link">{{i}}</a>
+              </li>
+
+            {% else %}
+              <li class="page-item">
+                <a href="?page={{i}}" class="page-link">{{i}}</a>
+              </li>
+            {% endif %}
+          {% endfor %}
+          {% if listings.has_next %}
+            <li class="page-item">
+              <a href="?page={{listings.next_page_number}}" class="page-link">&raquo;</a>
+            </li>
+          {% else %}
+            <li class="page-item disabled">
+            </li>
+          {% endif %}
+        </ul>
+      {% endif %}	 
+    </nav>
+  </div>
+</section>
+
+{% endblock %}

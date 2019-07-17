@@ -1,0 +1,108 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- FAVICON -->
+	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+	<link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
+	<!-- GOOLE MAP ICONS -->
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<!-- GOOGLE FONTS -->
+	<link href="https://fonts.googleapis.com/css?family=Lato:300,300i,400,400i%7CMontserrat:600,800" rel="stylesheet">
+	<!-- FONT AWESOME -->
+	<link rel="stylesheet" href="{% static 'css/fontawesome-all.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+	<!-- LEAFLET MAP -->
+	<link rel="stylesheet" href="{% static 'css/leaflet.css' %}">
+	<link rel="stylesheet" href="{% static 'css/leaflet-gesture-handling.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css/leaflet.markercluster.css' %}">
+	<link rel="stylesheet" href="{% static 'css/leaflet.markercluster.default.css' %}">
+	<!-- Slider Revolution CSS Files -->
+	<link rel="stylesheet" href="{% static 'revolution/css/settings.css' %}">
+	<link rel="stylesheet" href="{% static 'revolution/css/layers.css' %}">
+	<link rel="stylesheet" href="{% static 'revolution/css/navigation.css' %}">
+	<!-- ARCHIVES CSS -->
+	<link rel="stylesheet" href="{% static 'css/animate.css' %}">
+	<link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}">
+	<link rel="stylesheet" href="{% static 'css/lightcase.css' %}">
+	<link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+	<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+	<link rel="stylesheet" id="color" href="{% static 'css/default.css' %}">
+	
+	<!-- Bootstrap -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<title>RESIDE</title>
+</head>
+<body>
+
+	<!-- Topbar -->
+	{% include 'partials/_topbar.html' %}
+	
+    <!-- Navbar -->
+    {% include 'partials/_navbar.html' %}
+
+    {% block content %} {% endblock %}
+    
+    <!-- footer -->
+	{% include 'partials/_footer.html' %}
+	
+	<!-- ARCHIVES JS -->	
+	<script src="{% static 'js/jquery.min.js' %}"></script>
+	<script src="{% static 'js/jquery-ui.js' %}"></script>
+	<script src="{% static 'js/tether.min.js' %}"></script>
+	<script src="{% static 'js/moment.js' %}"></script>
+	<script src="{% static 'js/transition.min.js' %}"></script>
+	<script src="{% static 'js/bootstrap.min.js' %}"></script>
+	<script src="{% static 'js/fitvids.js' %}"></script>
+	<script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+	<script src="{% static 'js/jquery.counterup.min.js' %}"></script>
+	<script src="{% static 'js/imagesloaded.pkgd.min.js' %}"></script>
+	<script src="{% static 'js/isotope.pkgd.min.js' %}"></script>
+	<script src="{% static 'js/smooth-scroll.min.js' %}"></script>
+	<script src="{% static 'js/lightcase.js' %}"></script>
+	<script src="{% static 'js/owl.carousel.js' %}"></script>
+	<script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
+	<script src="{% static 'js/ajaxchimp.min.js' %}"></script>
+	<script src="{% static 'js/newsletter.js' %}"></script>
+	<script src="{% static 'js/jquery.form.js' %}"></script>
+	<script src="{% static 'js/jquery.validate.min.js' %}"></script>
+	<script src="{% static 'js/forms-2.js' %}"></script>
+	<script src="{% static 'js/leaflet.js' %}"></script>
+	<script src="{% static 'js/leaflet-gesture-handling.min.js' %}"></script>
+	<script src="{% static 'js/leaflet-providers.js' %}"></script>
+	<script src="{% static 'js/leaflet.markercluster.js' %}"></script>
+	
+	<script src="{% static 'js/color-switcher.js' %}"></script>
+	<script src="{% static 'js/main.js' %}"></script>
+	<script src="{% static 'js/range-slider.js' %}"></script>
+	<script src="{% static 'js/popup.js' %}"></script>
+	<script src="{% static 'js/inner.js' %}"></script>
+	<script src="{% static 'js/map.js' %}"></script>
+	
+	<!-- Slider Revolution scripts -->
+	<script src="{% static 'revolution/js/jquery.themepunch.tools.min.js' %}"></script>
+	<script src="{% static 'revolution/js/jquery.themepunch.revolution.min.js' %}"></script>
+	<script src="{% static 'revolution/js/extensions/revolution.extension.actions.min.js' %}"></script>
+	<script src="{% static 'revolution/js/extensions/revolution.extension.carousel.min.js' %}"></script>
+	<script src="{% static 'revolution/js/extensions/revolution.extension.kenburn.min.js' %}"></script>
+	<script src="{% static 'revolution/js/extensions/revolution.extension.layeranimation.min.js' %}"></script>
+	<script src="{% static 'revolution/js/extensions/revolution.extension.migration.min.js' %}"></script>
+	<script src="{% static 'revolution/js/extensions/revolution.extension.navigation.min.js' %}"></script>
+	<script src="{% static 'revolution/js/extensions/revolution.extension.parallax.min.js' %}"></script>
+	<script src="{% static 'revolution/js/extensions/revolution.extension.slideanims.min.js' %}"></script>
+	<script src="{% static 'revolution/js/extensions/revolution.extension.video.min.js' %}"></script>
+
+	<!-- MAIN JS -->
+	<script src="{% static 'js/script.js' %}"></script>
+	
+	<!-- Bootstrap -->
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+	
+</body>
+</html>
