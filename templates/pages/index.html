@@ -224,15 +224,14 @@
 							{% endfor %}
 						</select>
 					</div>
-					<div class="clear"></div>
 					<div class="filter-item">
-						<label>Area</label>
-						<select name="area" id="property-area" class="form-control">
-							<option value="">Any</option>
-							{% for key,value in area_choices.items %}
+							<label>Area</label>
+							<select name="sqft" class="form-control">
+								<option value="">Area (All)</option>
+								{% for key,value in sqft.choices.items %}
 									<option value="{{ key }}">{{ value }}</option>
 								{% endfor %}
-						</select>
+							</select>
 					</div>
 					<div class="filter-item">
 							<label>State</label>
@@ -242,7 +241,7 @@
 									<option value="{{ key }}">{{ value }}</option>
 								{% endfor %}
 							</select>
-						</div>
+					</div>
 					<div class="filter-item">
 							<label>Price</label>
 							<select name="price" id="property-price" class="form-control">
@@ -374,7 +373,6 @@
 						<div class="agent-section p-top-35 p-bottom-30 p-right-25 p-left-25">
 							<h4 class="m-bottom-15 text-bold-700">Houses</h4>
 							<p>Nonec pede justo fringilla vel aliquet nec vulputate eget arcu in enim justo rhoncus ut imperdiet venenatis vitae justo.</p>
-							<a class="text-base text-base-dark-hover text-size-13" href="properties-full-list.html">Read More <i class="fa fa-long-arrow-right"></i></a>
 						</div>
 					</div>
 				</div>
@@ -386,7 +384,6 @@
 						<div class="agent-section p-top-35 p-bottom-30 p-right-25 p-left-25">
 							<h4 class="m-bottom-15 text-bold-700">Apartments</h4>
 							<p>Nonec pede justo fringilla vel aliquet nec vulputate eget arcu in enim justo rhoncus ut imperdiet venenatis vitae justo.</p>
-							<a class="text-base text-base-dark-hover text-size-13" href="properties-full-list.html">Read More <i class="fa fa-long-arrow-right"></i></a>
 						</div>
 					</div>
 				</div>
@@ -398,7 +395,6 @@
 						<div class="agent-section p-top-35 p-bottom-30 p-right-25 p-left-25">
 							<h4 class="m-bottom-15 text-bold-700">Commercial</h4>
 							<p>Nonec pede justo fringilla vel aliquet nec vulputate eget arcu in enim justo rhoncus ut imperdiet venenatis vitae justo.</p>
-							<a class="text-base text-base-dark-hover text-size-13" href="properties-full-list.html">Read More <i class="fa fa-long-arrow-right"></i></a>
 						</div>
 					</div>
 				</div>

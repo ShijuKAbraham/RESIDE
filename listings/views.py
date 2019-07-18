@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404, render
 
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from listings.choices import type_choices, bedroom_choices, bathroom_choices, area_choices, state_choices, price_choices
+from listings.choices import type_choices, bedroom_choices, bathroom_choices, sqft_choices, state_choices, price_choices
 
 from .models import Listing
 
@@ -55,11 +55,11 @@ def search(request):
         if bathrooms:
             queryset_list = queryset_list.filter(bathrooms__lte=bathrooms)
 
-    #area
-    if 'area' in request.GET:
-        area = request.GET['area']
-        if area:
-            queryset_list = queryset_list.filter(area__lte=area)
+ #sqft
+    if 'sqft' in request.GET:
+        sqft = request.GET['sqft']
+        if sqft:
+            queryset_list = queryset_list.filter(sqft__lte=sqft)
 
     #state
     if 'state' in request.GET:
@@ -77,10 +77,11 @@ def search(request):
         'type_choices': type_choices,
         'bedroom_choices': bedroom_choices,
         'bathroom_choices': bathroom_choices,
-        'area_choices': area_choices,
+        'sqft_choices': sqft_choices,
         'state_choices': state_choices,
         'price_choices': price_choices,
-        'listings': queryset_list
+        'listings': queryset_list,
+        'values': request.GET
     }
     return render(request, 'listings/search.html', context)
     

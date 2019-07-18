@@ -25,7 +25,7 @@ bathroom_choices = {
 }
 
 
-area_choices = {
+sqft_choices = {
     '1000':'1000 Sqft',
     '2000':'2000 Sqft',
     '3000':'3000 Sqft',
