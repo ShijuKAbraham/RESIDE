@@ -5234,6 +5234,8 @@ main.services-2 {
   background-color: #fff; }
 
 #login {
+  padding-top: 1%;
+  padding-bottom: 1%;
   background-color: #edeff1;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -5244,7 +5246,9 @@ main.services-2 {
           flex-direction: column;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center; }
+          align-items: center;
+          
+        }
 
 a.social_bt {
   border-radius: 3px;
@@ -7529,5 +7533,5 @@ textarea.border,
     background-color: #EAE9E9;
   }
   /* end of google map style */
-  
+
   

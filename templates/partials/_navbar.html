@@ -32,26 +32,23 @@
                                 <a class="dropdown-item" href="#newsletter">Newsletter</a>
                             </div>
                         </li>
-                        <li class="dropdown hidden-md-down">
-                            <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#">RENT</a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="#">Flat/House</a>
-                                <a class="dropdown-item" href="#">Apartment</a>
-                                <a class="dropdown-item" href="#">Commercial</a>
-                            </div>
-                        </li>
-                        <li class="dropdown hidden-md-down">
-                            <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#">FOR SALE</a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="#">Flat/House</a>
-                                <a class="dropdown-item" href="#">Apartment</a>
-                                <a class="dropdown-item" href="#">Commercial</a>
-                            </div>
-                        </li>
                         <li><a href="{% url 'listings' %}">FEATURED PROPERTIES</a></li>
-                        <li><a href="#">LAND</a></li>
                         <li><a href="#">Contact</a></li>
                         <li><a href="{% url 'about' %}">About</a></li>
+                        <li
+                        {% if 'register' in request.path %}
+                            class="nav-item mr-3"
+                        {% else %}
+                            class="nav-item mr-3"
+                        {% endif %}
+                        ><a href="{% url 'register' %}"><i class="fa fa-sign-in"></i> Register</a></li>
+                        <li
+                        {% if 'login' in request.path %}
+                            class="nav-item mr-3"
+                        {% else %}
+                            class="nav-item mr-3"
+                        {% endif %}
+                        ><a href="{% url 'login' %}"><i class="fa fa-user"></i> Login</a></li>
                     </ul>
                 </nav>
             </div>
